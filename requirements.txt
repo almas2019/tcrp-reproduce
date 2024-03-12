@@ -41,7 +41,6 @@ tornado==5.1.1
 traitlets==4.3.3
 typing==3.7.4.1
 wcwidth==0.2.5
-#setuptools==58.2.0 #added this because I was getting a setuptools.installer and fetch_build_eggs are deprecated. error so downgraded
 
 
 
