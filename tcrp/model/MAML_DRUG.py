@@ -288,7 +288,7 @@ for epoch in range( args.num_updates ):
 		meta_train_loss[i], meta_train_corr[i], meta_val_loss[i], meta_val_corr[i] = metrics
 
 	if meta_val_loss.mean() < best_loss:
-	   	best_loss = meta_val_loss.mean()
+		best_loss = meta_val_loss.mean()
 		best_epoch = epoch
 		bad_counter = 0
 	else:
