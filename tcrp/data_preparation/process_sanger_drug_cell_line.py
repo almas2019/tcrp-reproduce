@@ -34,14 +34,17 @@ def load_network(network_file_list, valid_gene_list):
     
     for file_name in network_file_list:
         
-        print 'Load network', file_name
+        print('Load network', file_name)
         
         file_handle = open(file_name)
     
         for line in file_handle:
         
             line = line.rstrip().split()
-            gene1, gene2 = line[0], line[1]
+            try:
+                gene1, gene2 = line[0], line[1]
+            except:
+                print(line)
         
             if gene1 not in valid_gene_list or gene2 not in valid_gene_list:
                 continue
@@ -85,8 +88,8 @@ def list2index(cell_line_list, cell_line2id):
 # In[3]:
 
 
-data_file = '/cellar/users/majianzhu/CancerDrug/sanger_cell_line_data/'
-new_network_file = '/cellar/users/majianzhu/CancerDrug/networks/'
+data_file = '../data/'
+new_network_file = data_file+'network/'
 
 exp_data_file = data_file + 'Cell_line_RMA_proc_basalExp.txt'
 
@@ -97,7 +100,7 @@ drug_target_file = data_file + 'drug_target_list'
 
 feature_folder = 'feature/'
 
-inbiomap_file = 'InBio-Map_Symbol.sif'
+inbiomap_file = 'core_inbiomap.sif'
 pathwaycomm_file = 'PathwayCommons9.txt'
 
 pd.set_option('display.max_columns', 20)
@@ -122,7 +125,7 @@ exp_df = exp_df.groupby(level=0).first()
 exp_gene_list = list(exp_df.columns)
 exp_cell_line_list = list(exp_df.index.unique())
 
-print len(exp_cell_line_list), len(exp_gene_list)
+print(len(exp_cell_line_list), len(exp_gene_list))
 
 exp_df
 
@@ -130,17 +133,45 @@ exp_df
 # In[5]:
 
 
-maf = pd.read_csv(mutation_data_file, sep='\t', index_col=0).fillna(0)
-mutation_df = maf.groupby(['COSMIC_ID', 'Gene']).size().unstack().fillna(0).clip_upper(1)
+maf = pd.read_csv(mutation_data_file,index_col=0).fillna(0)
+mutation_df = maf.groupby(['COSMIC_ID', 'Gene']).size().unstack().fillna(0).clip(upper=1)
 mutation_gene_list = list(mutation_df.columns)
 mutation_cell_line_list = list(mutation_df.index.unique())
 
-print len(mutation_cell_line_list), len(mutation_gene_list)
+print(len(mutation_cell_line_list), len(mutation_gene_list))
 
 mutation_df
 
 
 # In[6]:
+
+
+drug_paths = pd.read_csv('../data/drug_pathways.tsv', sep='\t')
+drugs_legend = pd.read_csv('../data/Screened_Compounds_v2.tsv', sep='\t', index_col=0, encoding='latin-1')
+
+drug_paths = drug_paths.drop_duplicates()
+drugs_legend = drugs_legend.drop_duplicates()
+filtered = drug_paths[drug_paths['Targeted process or pathway'].isin(['other', 'chromatin other'])]
+
+drugs_list = list(filtered['Drug'])
+z = []
+for drug in drugs_list:
+    drug_synonym = drugs_legend[drugs_legend.apply(lambda x: drug in str(x['Synonyms']), axis=1)]
+    if len(drug_synonym) > 0:
+        drug_name = drug_synonym['Drug Name'].iloc[0]
+        if drug_name not in drugs_list:
+            z.append(drug_name)
+
+drugs_list.extend(z)
+
+selected_drugs = drugs_legend[ ~ ( drugs_legend['Drug Name'].isin(drugs_list) ) ]
+drug_file_dest = '../data/drug_target_list'
+d_file = open(drug_file_dest, 'w')
+selected_drugs.apply(lambda x: d_file.write(x['Drug Name']+"|"+x['Target']+"\n"), axis=1)
+d_file.close()
+
+
+# In[7]:
 
 
 file_handle = open(drug_target_file)
@@ -164,19 +195,21 @@ for line in file_handle:
             drug_target_map[drug].append(target.strip())
             drug_target_list.append(target.strip())
 
-print len(drug_target_list)
-print drug_target_map
+print(len(drug_target_list))
+print(drug_target_map)
 
 
 # In[8]:
 
 
-drugs_legend = pd.read_csv('/cellar/users/majianzhu/CancerDrugXenografts/cell_line_data/Screened_Compounds.csv', sep='\t', index_col=0)
+drugs_legend = pd.read_csv('../data/Screened_Compounds_v2.tsv', sep='\t', index_col=0, encoding='latin-1')
+
+print(drugs_legend['Target Pathway'].value_counts())
 
 drug2id_mapping = {}
 
 for index in list(drugs_legend.index) :
-    drug_name = drugs_legend.loc[index,'DRUG NAME']
+    drug_name = drugs_legend.loc[index,'Drug Name']
     drug2id_mapping[ drug_name ] = index
 
 drug2id_mapping
@@ -194,7 +227,7 @@ gene_neighbor_map = load_network(network_list, valid_gene_list)
 # In[10]:
 
 
-gene_name_df = pd.read_table(data_file + 'HUGO_protein-coding_gene.txt', index_col=25, sep='\t')
+gene_name_df = pd.read_csv(data_file + 'HUGO_protein-coding_gene.txt', index_col=25, sep='\t')
 
 
 # In[11]:
@@ -216,7 +249,7 @@ for uniprot_gene in gene_name_df.index:
 # In[12]:
 
 
-corum_df = pd.read_table(new_network_file + 'allComplexes.txt', index_col=0)
+corum_df = pd.read_csv(new_network_file + 'allComplexes.txt', index_col=0, sep='\t')
 
 uniprot_gene_set = set()
 
@@ -230,7 +263,7 @@ for index in corum_df.index:
     for gene in complex_list:
         uniprot_gene_set.add(gene)
 
-print len(uniprot_gene_set), 'genes'
+print(len(uniprot_gene_set), 'genes')
 
 query_gene_set = []
 
@@ -238,7 +271,7 @@ for gene in uniprot_gene_set:
     if gene not in gene_name_map:
         query_gene_set.append(gene)
     
-print 'Need to query', len(query_gene_set)
+print('Need to query', len(query_gene_set))
 
 query_gene_list = list(query_gene_set)
 
@@ -253,13 +286,13 @@ for i, gene in enumerate(query_gene_list):
     else:
         gene_name_map[gene] = out[i]['symbol']
         
-print len(not_found_gene_list), 'symbol name not found', len(gene_name_map)
+print(len(not_found_gene_list), 'symbol name not found', len(gene_name_map))
 
 
 # In[13]:
 
 
-corum_df = pd.read_table(new_network_file + 'allComplexes.txt', index_col=0)
+corum_df = pd.read_csv(new_network_file + 'allComplexes.txt', index_col=0, sep="\t")
 
 for index in corum_df.index:
     
@@ -306,7 +339,7 @@ for i in range(len(exp_gene_list)):
             gene_exp_neighbor_map[gene1].add(gene2)
             
     if gene1 not in gene_exp_neighbor_map[gene1]:
-        print gene1, 'not in itself?', P[i,i]
+        print(gene1, 'not in itself?', P[i,i])
 
 
 # In[15]:
@@ -337,15 +370,15 @@ for drug, target_list in drug_target_map.items():
 
 sns.set_style("whitegrid")
 sns.set_context("talk")
-sns.distplot(drug_feature_list,color='r',bins=60,kde=False,norm_hist=False)
+sns.histplot(drug_feature_list,color='r',bins=60,kde=False)
 
 
 # In[16]:
 
 
-drugs = pd.read_csv(drug_cell_line_file, sep='\t',index_col=2)
+drugs = pd.read_csv(drug_cell_line_file,index_col=2)
 drugs_cell_line_list = list(drugs.index.unique())
-print len(drugs_cell_line_list)
+print(len(drugs_cell_line_list))
 drugs
 
 #cell_line_drug_matrix = drugs.loc[drugs['DRUG_ID'] == 1026]
@@ -354,14 +387,14 @@ drugs
 #cell_line_drug_matrix.loc[ [909758, 924247, 924107],'DRUG_ID' ]
 
 
-# In[17]:
+# In[18]:
 
 
 cell_line_list = list(set(drugs_cell_line_list)&set(exp_cell_line_list)&set(mutation_cell_line_list) )
-print len(cell_line_list)
+print(len(cell_line_list))
 
 
-# In[18]:
+# In[19]:
 
 
 cell_line_legend = pd.read_csv(cell_line_detail_file, sep='\t', index_col=1)
@@ -371,7 +404,7 @@ tissue_map = {}
 
 for cell_line in cell_line_list:
     
-    tissue = cell_line_legend.loc[cell_line,'Site']
+    tissue = cell_line_legend.loc[cell_line,'GDSC Tissue descriptor 1']
     
     if tissue not in tissue_map:
         tissue_map[tissue] = []
@@ -384,10 +417,11 @@ for tissue, cell_line in tissue_map.items():
     if len(cell_line) >= 15:
         large_tissue_number += 1
     
-    print tissue, len(cell_line)
+    print(tissue, len(cell_line))
 
-print 'How many tissues', len(tissue_map)
-print 'Large tissues', large_tissue_number
+print('How many tissues', len(tissue_map))
+print('Large tissues', large_tissue_number)
+
 
 '''
 file_handle = open(data_file + "sanger_tissue_cell_line_list.pkl","wb")
@@ -396,21 +430,32 @@ file_handle.close()
 '''
 
 
-# In[22]:
+# In[20]:
 
 
-new_data_file = ''
+for tissue in tissue_map:
+    if len(tissue_map[tissue]) > 14:
+        print(tissue)
 
-print mutation_df.shape, exp_df.shape
 
-exp_stdev = np.std(exp_df.values, axis=0)
+# In[21]:
+
+
+#Create output folder
+new_data_file = data_file+'cell_line_lists/'
+
+if not os.path.exists(new_data_file):
+    os.makedirs(new_data_file)
+
+print(mutation_df.shape, exp_df.shape)
+exp_stdev = np.std(exp_df.values)
 exp_perc = np.percentile(exp_stdev,10)
 filtered_exp_gene_list = np.asarray(exp_gene_list)[exp_stdev > exp_perc]
 
 mut_sum = np.sum(mutation_df.values,axis=0)
 filtered_mut_gene_list = np.asarray(mutation_gene_list)[mut_sum > 5]
 
-print np.sum(exp_stdev > exp_perc), np.sum(mut_sum > 5)#, np.sum(cnv_stdev > cnv_perc)
+print(np.sum(exp_stdev > exp_perc), np.sum(mut_sum > 5))#, np.sum(cnv_stdev > cnv_perc)
 
 #new_exp_df = exp_df.loc[ cell_line_list, list(filtered_exp_gene_list) ]
 #new_mutation_df = mutation_df.loc[ cell_line_list, list(filtered_mut_gene_list) ]
@@ -428,7 +473,7 @@ for drug in selected_drug_list:
 #         continue
     
     if drug not in drug2id_mapping:
-        print 'drug name wrong', drug
+        print('drug name wrong', drug)
         sys.exit(1)
     
     cell_line_drug_matrix = drugs.loc[drugs['DRUG_ID'] == drug2id_mapping[drug]]
@@ -449,15 +494,15 @@ for drug in selected_drug_list:
     
     rename_selected_drug_list.append(drug)
     
-    print drug
+    print(drug)
     if drug == 'Nutlin-3a_(-)':
         drug = 'Nutlin-3a'
     
-    drug_folder = 'drug_feature/' + drug + '/'
+    drug_folder = data_file+'drug_feature/' + drug + '/'
     if not os.path.exists(drug_folder):
         os.makedirs(drug_folder)
         
-    print 'Generate features', drug
+    print('Generate features', drug)
     
     for tissue, tissue_cell_line_list in tissue_map.items():
         
@@ -468,29 +513,29 @@ for drug in selected_drug_list:
         feature_list = []
         
         if len(feature_exp_gene_list) != 0:
-            feature_list.append( new_exp_df.loc[ drug_specific_cell_line, feature_exp_gene_list ].values )
+            feature_list.append( new_exp_df.loc[ list(drug_specific_cell_line), feature_exp_gene_list ].values )
             for gene in feature_exp_gene_list:
                 feature_description.append(gene+'_expression')
         
         if len(feature_mut_gene_list) != 0:
-            feature_list.append( mutation_df.loc[ drug_specific_cell_line, feature_mut_gene_list ].values )
+            feature_list.append( mutation_df.loc[ list(drug_specific_cell_line), feature_mut_gene_list ].values )
             for gene in feature_mut_gene_list:
                 feature_description.append(gene+'_mutation')
             
         feature = np.concatenate(feature_list, axis=1)
         
-        label = cell_line_drug_matrix.loc[ drug_specific_cell_line,'LN_IC50'].values
+        label = cell_line_drug_matrix.loc[ list(drug_specific_cell_line),'LN_IC50'].values
         
         #label = new_crispr_df.loc[ tissue_cell_line_list, label_gene ].values
     
-        print feature.shape, label.shape
+        print(feature.shape, label.shape)
      
         np.save(drug_folder + tissue + '_' + drug + '_feature.npy', feature )
         np.save(drug_folder + tissue + '_' + drug + '_label.npy', label)
         np.save(drug_folder + tissue + '_feature_description.npy', np.asarray(feature_description))
         
     file_handle = open(new_data_file + drug+'_tissue_cell_line_list.pkl',"wb")
-    pickle.dump(drug_tissue_map,file_handle)
+    pickle.dump(drug_tissue_map,file_handle) 
     file_handle.close()
     
 file_handle = open('rename_selected_drug_list', 'w')
@@ -499,56 +544,50 @@ for drug in rename_selected_drug_list:
 file_handle.close()
 
 
-# In[27]:
-
-
-len(drug_specific_cell_line)
-
-
-# In[31]:
+# In[ ]:
 
 
 len(drug_tissue_map['breast'])
 
 
-# In[35]:
+# In[ ]:
 
 
 import pickle
 
 
-# In[37]:
+# In[ ]:
 
 
-cell_line_loc = '/cellar/users/samsonfong/Projects/tcrp-v2/from-ma/cell_line_lists/'
+cell_line_loc = '../cell_line_lists/'
 
 
-# In[38]:
+# In[ ]:
 
 
 with open(cell_line_loc + 'KU-55933_tissue_cell_line_list.pkl', 'rb') as f: 
     tmap= pickle.load(f)
 
 
-# In[48]:
+# In[ ]:
 
 
-tmap.keys()
+print(len(tmap.keys()))
 
 
-# In[49]:
+# In[ ]:
 
 
 len(tmap['lung'])
 
 
-# In[50]:
+# In[ ]:
 
 
-f = np.load('/cellar/users/samsonfong/Projects/tcrp-v2/from-ma/drug_feature/KU-55933/lung_KU-55933_feature.npy')
+f = np.load(data_file+'drug_feature/KU-55933/lung_KU-55933_feature.npy')
 
 
-# In[51]:
+# In[ ]:
 
 
 f.shape
