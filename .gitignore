@@ -6,3 +6,12 @@ network
 analysis
 cell_line_lists
 drug_feature
+tcrp/data
+*.out
+._.gitignore
+._.git
+._.DS_Store
+._.*
+._*
+tcrp/.DS_Store
+.DS_Store
