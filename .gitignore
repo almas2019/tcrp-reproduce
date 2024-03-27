@@ -15,3 +15,5 @@ tcrp/data
 ._*
 tcrp/.DS_Store
 .DS_Store
+tcrp/output
+tcrp/.DS_Store

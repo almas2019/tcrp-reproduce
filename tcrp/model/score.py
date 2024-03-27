@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 from torch.autograd import Variable
-from utils import *
+from . utils import *
 from scipy import stats
 
 # Helper methods for evaluating a classification network
