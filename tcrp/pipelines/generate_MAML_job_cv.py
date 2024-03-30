@@ -21,7 +21,7 @@ dir_name = os.path.dirname(filepath)
 home_dir = os.path.dirname(os.path.dirname(dir_name))
 print(home_dir)
 work_dic = home_dir + '/data/cell_line_lists/'
-job_directory = home_dir + '/tcrp/model/output/{}/'.format(args.run_name)
+job_directory = home_dir + '/output/{}/'.format(args.run_name)
 
 file_handle = open( drug_list_file )
 

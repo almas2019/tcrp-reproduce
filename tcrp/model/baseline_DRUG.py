@@ -22,9 +22,13 @@ parser = argparse.ArgumentParser()
 #work_dic = '/share/data/jinbodata/siqi/Cancer_Drug_Xenograft/'
 #data_dic = '/share/data/jinbodata/siqi/Cancer_Drug_Xenograft/tissue_test_data/'
 #work_dic = '/cellar/users/samsonfong/Projects/tcrp-v2/from-ma/cell_line_lists/'
-work_dic = '/mnt/beegfs/users/shfong/projects/TCRP-refactored/tcrp-original/data/cell_line_lists/'
+filepath = os.path.realpath(__file__)
+dir_name = os.path.dirname(filepath)
+home_dir = os.path.dirname(os.path.dirname(dir_name))
+work_dic = home_dir + '/data/cell_line_lists/'
+data_dic = home_dir + '/data/drug_feature/'
 #data_dic = '/cellar/users/samsonfong/Projects/tcrp-v2/from-ma/drug_feature/'
-data_dic = '/mnt/beegfs/users/shfong/projects/TCRP-refactored/tcrp-original/data/drug_feature/'
+#data_dic = '/mnt/beegfs/users/shfong/projects/TCRP-refactored/tcrp-original/data/drug_feature/'
 filepath = os.path.realpath(__file__)
 dir_name = os.path.dirname(filepath)
 
@@ -46,7 +50,6 @@ if args.fewshot_data_path is None:
 	fewshot_data_path = job_directory
 else: 
 	fewshot_data_path = args.fewshot_data_path
-
 K = args.K
 num_trials = args.num_trials
 

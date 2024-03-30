@@ -6,7 +6,7 @@ import torch.utils.data as du
 from torch.autograd import Variable
 import torch.nn as nn
 import torch.nn.functional as F
-from . layers import *
+from layers import *
 
 class mlp(nn.Module):
 

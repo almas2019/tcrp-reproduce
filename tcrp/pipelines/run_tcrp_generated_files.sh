@@ -6,7 +6,7 @@
 #SBATCH -c 4    
 #SBATCH -N 1 
 
-cd /cluster/projects/schwartzgroup/almas/tcrp-reproduce/tcrp/model/output/210803_drug-baseline-models/MAML_cmd
+cd /cluster/projects/schwartzgroup/almas/tcrp-reproduce/output/210803_drug-baseline-models/MAML_cmd
 eval "$(conda shell.bash hook)"
 conda activate tcrp_env
 ls run_MAML_drugs*.sh | awk '{k = "sbatch "$0""; system(k); print(k)}'

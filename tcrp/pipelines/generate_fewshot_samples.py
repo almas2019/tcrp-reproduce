@@ -64,7 +64,7 @@ parser.add_argument('--run_name', type=str, default='run', help='Run name')
 
 args = parser.parse_args()
 
-job_directory = home_dir + '/tcrp/model/output/{}/'.format(args.run_name)
+job_directory = home_dir + '/output/{}/'.format(args.run_name)
 
 K = args.K
 num_trials = args.num_trials
