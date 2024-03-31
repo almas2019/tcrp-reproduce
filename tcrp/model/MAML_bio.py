@@ -12,7 +12,7 @@ import sys
 import torch.nn as nn
 import pickle
 import copy
-#from data_loading import *
+from data_loading import *
 from utils import *
 from score import *
 from inner_loop import InnerLoop
@@ -108,7 +108,8 @@ def unseen_tissue_learn(unseen_train_loader, unseen_test_loader):
 
     for i in range(args.num_inner_updates):
         
-        in_, target = unseen_train_loader.__iter__().next()
+        #in_, target = unseen_train_loader.__iter__().next()
+        in_, target= unseen_train_loader.__iter__().__next__()
         loss, _  = forward_pass( unseen_tissue_model, in_, target )
         unseen_opt.zero_grad()
         loss.backward()
@@ -123,7 +124,8 @@ def unseen_tissue_learn(unseen_train_loader, unseen_test_loader):
 def meta_update(test_loader, ls):
 
     #print 'Meta update'
-    in_, target = test_loader.__iter__().next()
+    #in_, target = test_loader.__iter__().next()
+    in_, target = test_loader.__iter__().__next__()
     
     # We use a dummy forward / backward pass to get the correct grads into self.net
     loss, out = forward_pass(observed_tissue_model, in_, target)

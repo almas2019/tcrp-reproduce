@@ -28,7 +28,7 @@ print(home_dir)
 
 n_gpus = 20
 
-run_mode = "tcrp" # "tcrp" or "baseline"
+run_mode = "baseline" # "tcrp" or "baseline"
 run_name = "210803_drug-baseline-models"
 out_directory = home_dir + '/output/' + run_name
 task_directory = out_directory + '/' + "tasks"
@@ -53,7 +53,7 @@ priority_chunked = make_chunks(priority, n_gpus)
 
 print ("Total number of drugs: {}".format(len(priority) + len(remaining_drugs)))
 
-fewshot_data_path = home_dir+"/output/210803_drug-baseline-models"
+fewshot_data_path = home_dir+"/output/210803_drug-baseline-models/" #fewshot_data is appended in the script
 
 for i, (a, b) in enumerate(zip(priority_chunked, remaining_drugs_chunked)):
     _drugs = a + b

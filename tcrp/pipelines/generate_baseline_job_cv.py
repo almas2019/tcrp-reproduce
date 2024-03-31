@@ -21,11 +21,13 @@ drug_list_file, job, job_id = args.drug_list_file, args.job, args.job_id
 #work_dic = '/share/data/jinbodata/siqi/Drug_data/'
 #work_dic = '/share/data/jinbodata/siqi/mut_exp_cnv_data/challenge_1b/'
 #work_dic = '/cellar/users/samsonfong/Projects/tcrp-v2/from-ma/cell_line_lists/'
-work_dic = '../data/cell_line_lists/'
+
 filepath = os.path.realpath(__file__)
 dir_name = os.path.dirname(filepath)
-job_directory = dir_name + '/output/{}/'.format(args.run_name)
-
+#job_directory = dir_name + '/output/{}/'.format(args.run_name)
+job_directory= "/cluster/projects/schwartzgroup/almas/tcrp-reproduce/"+'output/{}/'.format(args.run_name) # fix this
+home_dir = os.path.dirname(os.path.dirname(dir_name))
+work_dic = home_dir + '/data/cell_line_lists/'# added this
 file_handle = open( drug_list_file )
 
 cmd_folder = job_directory + 'baseline_cmd/'
@@ -49,11 +51,11 @@ for line in file_handle:
 		if len(tissue_cell_line) < 15:
 			continue
 
-		# Assuming fewshot samples already exist..., had to uncomment because fewshot samples did not exist
+		# Assuming fewshot samples already exist...
 		 #cmd_str = '$python ' + dir_name + '/' + 'generate_fewshot_samples.py ' + '--tissue {} --drug {} --K 10 --num_trials 20 --run_name {}'.format(tissue, gene, args.run_name)
 		 #cmd_list.append(cmd_str)
 		
-		cmd_str = '$python ' + dir_name + '/' + 'baseline_DRUG.py --tissue ' + tissue + ' --drug ' + gene + ' --K 10 --num_trials 20' + ' --run_name ' + args.run_name  + fewshot_data_path_str
+		cmd_str = '$python ' + "/cluster/projects/schwartzgroup/almas/tcrp-reproduce/tcrp/model" + '/' + 'baseline_DRUG.py --tissue ' + tissue + ' --drug ' + gene + ' --K 10 --num_trials 20' + ' --run_name ' + args.run_name  + fewshot_data_path_str # changed location to model and fixed path error
 		cmd_list.append( cmd_str )						
 
 file_handle.close()
