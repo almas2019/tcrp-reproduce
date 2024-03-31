@@ -71,6 +71,8 @@ def evaluate_new(net, loader, train_flag, weights=None):
 
     test_predict = []
     test_label = []
+    test_predict = []
+    test_label = []
 
     for i, (in_, target) in enumerate(loader):
 
@@ -83,8 +85,8 @@ def evaluate_new(net, loader, train_flag, weights=None):
         # Here loss is MSE
         l = net.loss_fn(out, target_var)
 
-        #test_predict = torch.cat([test_predict, out.data], 0)
-        #test_label = torch.cat([test_label, target_var.data], 0)
+		#test_predict = torch.cat([test_predict, out.data], 0)
+		#test_label = torch.cat([test_label, target_var.data], 0)
         test_predict.append(out.data)
         test_label.append(target_var.data)
 

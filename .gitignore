@@ -6,6 +6,7 @@ network
 analysis
 cell_line_lists
 drug_feature
+baseline_performances
 tcrp/data
 *.out
 ._.gitignore
