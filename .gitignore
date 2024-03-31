@@ -18,4 +18,5 @@ tcrp/.DS_Store
 tcrp/output
 tcrp/.DS_Store
 output.tar.gz
-zi0U8SXw
+*.lz4
+.DS_Store

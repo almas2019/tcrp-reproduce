@@ -45,7 +45,7 @@ parser.add_argument('--fewshot_data_path', type=str, default=None, help='Path to
 
 args = parser.parse_args()
 
-job_directory = dir_name + '/output/{}/'.format(args.run_name)
+job_directory = "/cluster/projects/schwartzgroup/almas/tcrp-reproduce" + '/output/{}/'.format(args.run_name) #changed this
 if args.fewshot_data_path is None:
 	fewshot_data_path = job_directory
 else: 
@@ -141,7 +141,7 @@ def make_predictions(model, X, y):
 	return out[0,1]
 
 
-base_line_outpath = job_directory + "baseline_performances/" + args.drug + '/' + args.tissue + '/'
+base_line_outpath = job_directory + "baseline_performances/" + args.drug + '/' + args.tissue + '/'#
 os.system("mkdir -p {}".format(base_line_outpath))
 
 models = [
