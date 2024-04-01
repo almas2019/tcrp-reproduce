@@ -38,8 +38,8 @@ def pearson_corr(x, y):
 
 def load_merged_data(tissue_map, drug, path='/home-nfs/wangsheng/GDSC_PDX_WP_feature/'):
 
-    #Load dataset
-    print( 'Loading feature and label files...')
+	#Load dataset
+	print('Loading feature and label files...')
 
     feature_list, label_list, tissue2id, tissue_index_list = [], [], [], []
     sample2tissue = {}
@@ -91,8 +91,8 @@ def load_merged_data(tissue_map, drug, path='/home-nfs/wangsheng/GDSC_PDX_WP_fea
     scaler2 = preprocessing.StandardScaler().fit(PDX_label)
     PDX_label = scaler2.transform(PDX_label)
 
-    print ('Cell line feature dimension', train_feature.shape, train_label.shape)
-    print ('PDX feature dimension', PDX_feature.shape, PDX_label.shape)
+	print('Cell line feature dimension', train_feature.shape, train_label.shape)
+	print('PDX feature dimension', PDX_feature.shape, PDX_label.shape)
 
     return train_feature, train_label, tissue_index_list, PDX_feature, PDX_label, sample2tissue
 
@@ -100,10 +100,10 @@ def load_merged_data(tissue_map, drug, path='/home-nfs/wangsheng/GDSC_PDX_WP_fea
 #def load_data_cell_line(tissue_map, drug, K, path='/share/data/jinbodata/siqi/mut_exp_cnv_data/challenge_GDSC_PDTC/GDSC_PPI_feature/'):
 #def load_data_cell_line(tissue_map, drug, K, path='/share/data/jinbodata/siqi/mut_exp_cnv_data/challenge_GDSC_PDTC/GDSC_won-parafac_feature/'):
 def load_data_cell_line(tissue_map, drug, tissue_arg, K, path='/home-nfs/wangsheng/GDSC_PDX_WP_feature/'):
-    #Load dataset
-    print ('Loading feature and label files...')
-    feature_map, label_map = {}, {}
-    all_tissue_feature_list = []
+	#Load dataset
+	print('Loading feature and label files...')
+	feature_map, label_map = {}, {}
+	all_tissue_feature_list = []
 
     for tissue, cell_line_list in tissue_map.items():
 
