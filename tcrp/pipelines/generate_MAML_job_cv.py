@@ -19,7 +19,7 @@ drug_list_file, job, job_id = args.drug_list_file, args.job, args.job_id
 filepath = os.path.realpath(__file__)
 dir_name = os.path.dirname(filepath)
 home_dir = os.path.dirname(os.path.dirname(dir_name))
-print home_dir
+print(home_dir)
 work_dic = home_dir + '/data/cell_line_lists/'
 job_directory = home_dir + '/output/{}/'.format(args.run_name)
 
@@ -94,11 +94,12 @@ file_handle = open(tempfile,'w')
 file_handle.writelines('#!/bin/bash\n')
 file_handle.writelines("#SBATCH --job-name {}{}\n".format(job, job_id))
 file_handle.writelines("#SBATCH --output={}/{}{}.%j\n".format(slurm_output, job, job_id))
-file_handle.writelines("#SBATCH --cpus-per-task=4\n")
+file_handle.writelines("#SBATCH --cpus-per-task=16\n")
 file_handle.writelines("#SBATCH --mem=64G\n")
-file_handle.writelines("#SBATCH --partition=nrnb-gpu\n")
-file_handle.writelines("#SBATCH --account=nrnb-gpu\n")
+file_handle.writelines("#SBATCH --partition=gpu\n")
+file_handle.writelines("#SBATCH --account=schwartzgroup_gpu\n")
 file_handle.writelines("#SBATCH --gres=gpu:1\n\n")
+file_handle.writelines("#SBATCH --constraint=gpu16g\n\n")
 
 file_handle.writelines("/usr/bin/bash {}/subcommands_MAML_{}{}.sh\n".format(subcommand_directory, job, job_id))
 

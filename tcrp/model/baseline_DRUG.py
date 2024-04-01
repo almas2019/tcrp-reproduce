@@ -22,9 +22,13 @@ parser = argparse.ArgumentParser()
 #work_dic = '/share/data/jinbodata/siqi/Cancer_Drug_Xenograft/'
 #data_dic = '/share/data/jinbodata/siqi/Cancer_Drug_Xenograft/tissue_test_data/'
 #work_dic = '/cellar/users/samsonfong/Projects/tcrp-v2/from-ma/cell_line_lists/'
-work_dic = '/mnt/beegfs/users/shfong/projects/TCRP-refactored/tcrp-original/data/cell_line_lists/'
+filepath = os.path.realpath(__file__)
+dir_name = os.path.dirname(filepath)
+home_dir = os.path.dirname(os.path.dirname(dir_name))
+work_dic = home_dir + '/data/cell_line_lists/'
+data_dic = home_dir + '/data/drug_feature/'
 #data_dic = '/cellar/users/samsonfong/Projects/tcrp-v2/from-ma/drug_feature/'
-data_dic = '/mnt/beegfs/users/shfong/projects/TCRP-refactored/tcrp-original/data/drug_feature/'
+#data_dic = '/mnt/beegfs/users/shfong/projects/TCRP-refactored/tcrp-original/data/drug_feature/'
 filepath = os.path.realpath(__file__)
 dir_name = os.path.dirname(filepath)
 
@@ -41,12 +45,11 @@ parser.add_argument('--fewshot_data_path', type=str, default=None, help='Path to
 
 args = parser.parse_args()
 
-job_directory = dir_name + '/output/{}/'.format(args.run_name)
+job_directory = "/cluster/projects/schwartzgroup/almas/tcrp-reproduce" + '/output/{}/'.format(args.run_name) #changed this
 if args.fewshot_data_path is None:
 	fewshot_data_path = job_directory
 else: 
 	fewshot_data_path = args.fewshot_data_path
-
 K = args.K
 num_trials = args.num_trials
 
@@ -138,7 +141,7 @@ def make_predictions(model, X, y):
 	return out[0,1]
 
 
-base_line_outpath = job_directory + "baseline_performances/" + args.drug + '/' + args.tissue + '/'
+base_line_outpath = job_directory + "baseline_performances/" + args.drug + '/' + args.tissue + '/'#
 os.system("mkdir -p {}".format(base_line_outpath))
 
 models = [
