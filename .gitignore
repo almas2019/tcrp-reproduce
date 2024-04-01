@@ -4,6 +4,11 @@ output
 data
 network
 analysis
+
+
+.DS_Store
+tcrp/.DS_Store
+
 cell_line_lists
 drug_feature
 baseline_performances
@@ -21,3 +26,4 @@ tcrp/.DS_Store
 output.tar.gz
 *.lz4
 .DS_Store
+
