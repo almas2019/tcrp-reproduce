@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Data downloading script to reproduce TCRP results 
+# Data downloading script to reproduce TCRP results
+# Downloading and file format conversion is automated for all files except WES_variants.xlsx, which needs to be manually converted to WES_variants.csv 
 data_file=../data/references/original_data/GDSC/ 
 mkdir -p "$data_file"
 cd "$data_file"
