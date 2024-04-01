@@ -1,10 +1,43 @@
 # tcrp-reproduce
-Refactored TCRP codebase with improved organization and additional code for data transformation and model selection. The original codebase can be accessed [here](https://github.com/idekerlab/TCRP). For high level questions regarding TCRP, check out the [TCRP FAQ](https://github.com/shfong/tcrp-reproduce/blob/public/tcrp-faq.md). 
+
+This repository hosts the code used in our attempt to recreate the results from challenge 1 of “Few-shot learning creates predictive models of drug response that translate from high-throughput screens to individual patients” (Ma et al., 2021) in fulfillment of the final project for the Winter 2024 course MBP 1413H - Biomedical Applications of Artificial Intelligence. The repository was forked from the authors’ refactored codebase: https://github.com/shfong/tcrp-reproduce and modified in an attempt to improve reproducibility. 
 
 ## Instructions for a complete run
-End-to-end run is quite completely glued together yet and will require a little bit of manual work. 
+To reproduce our refactored results, follow the following instructions: 
 
-### Gathering data
+### 1. Fork and clone this repository 
+
+### 2. Create a Conda environment:
+
+Create and activate a new Conda environment by running the following commands: 
+
+conda env create -f environment_w_jupyter.yml  
+conda activate tcrp_env 
+
+### 3. Gather input data  
+
+The script /data_preparation/download_data.sh downloads all data files required. After running this script, all files will be converted to the required file format to run process_sanger_drug_cell_line.ipynb, with the exception of the conversion of WES_variants.xlsx to WES_variants.csv, which should be performed manually in step C.  
+
+A. Make the script executable:  
+chmod +x download_data.sh  
+
+B. Run the script:  
+./download_data.sh  
+
+C. Convert WES_variants.xlsx to WES_variants.csv:  
+Open WES_variants.xlsx in Excel. Switch to the “WES_variants” tab at the bottom of the Excel sheet, and save to csv format through File -> Save as -> CSV UTF-8 (Comma delimited) (.csv). 
+
+Moreover, as an alternative to running download_data.sh, we provide a Google Drive link to all raw input files containing all files downloaded in download_data.sh: https://drive.google.com/drive/folders/1fhsu0zxsSmbCV6w01tMqzeCw0fpx1wYX?usp=sharing 
+
+### 4. Preprocess data 
+
+
+
+
+
+
+
+## OLD README: 
 
 This part of the pipeline is not automated yet. The raw data will need to be downloaded from DepMap, and the transformed data are generated in with a jupyter notebook `tcrp/data_preparation/process_sanger_drug_cell_line.ipynb`. This notebook will generate a series of pickled files and numpy compressed files that the following steps will be dependent on. 
 
