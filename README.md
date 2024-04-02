@@ -31,7 +31,7 @@ Moreover, as an alternative to running download_data.sh, we provide a Google Dri
 
 ### 4. Preprocess data 
 
-
+Run the jupyter notebook /data_preparation/process_sanger_drug_cell_line.ipynb interactively. Check the input data is properly placed in a data/ folder in the parent directory of the data_preparation folder, as well as the network/ folder for the allComplexes.txt, core_inbiomap.sif and PathwayCommons9.txt file.
 
 ### 6. Compare models
 
