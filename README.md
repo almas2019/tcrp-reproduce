@@ -18,13 +18,13 @@ Create and activate a new Conda environment by running the following commands:
 
 The script /data_preparation/download_data.sh downloads all data files required. After running this script, all files will be converted to the required file format to run process_sanger_drug_cell_line.ipynb, with the exception of the conversion of WES_variants.xlsx to WES_variants.csv, which should be performed manually in step C.  
 
-A. Make the script executable:  
+1. Make the script executable:  
 `chmod +x download_data.sh`  
 
-B. Run the script:  
+2. Run the script:  
 `bash ./download_data.sh`  
 
-C. Convert WES_variants.xlsx to WES_variants.csv:  
+3. Convert WES_variants.xlsx to WES_variants.csv:  
 Open WES_variants.xlsx in Excel. Switch to the “WES_variants” tab at the bottom of the Excel sheet, and save to csv format through File -> Save as -> CSV UTF-8 (Comma delimited) (.csv). 
 
 Moreover, as an alternative to running download_data.sh, we provide a Google Drive link to all raw input files containing all files downloaded in download_data.sh: https://drive.google.com/drive/folders/1fhsu0zxsSmbCV6w01tMqzeCw0fpx1wYX?usp=sharing 
