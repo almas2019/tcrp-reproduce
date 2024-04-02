@@ -44,14 +44,16 @@ def correctly_parse_log_path(filepath):
                     continue
                     
                 metrics_container.append(metrics)
-                
-    performance = all_metrics[best_epoch]
-    train_loss = performance[:, 0]
-    train_corr = performance[:, 1]
-    test_loss = performance[:, 2]
-    test_corr = performance[:, 3]
-    
-    return train_loss, train_corr, test_loss, test_corr
+    if best_epoch != -1:   
+        performance = all_metrics[best_epoch]
+        train_loss = performance[:, 0]
+        train_corr = performance[:, 1]
+        test_loss = performance[:, 2]
+        test_corr = performance[:, 3]
+        
+        return train_loss, train_corr, test_loss, test_corr
+    else:
+        return None
     
                 
 def parse_line(line):
@@ -66,30 +68,33 @@ def parse_line(line):
 
 
 def select_hyperparameter(log_directory): 
-    log_directory = Path(log_directory)
+    #log_directory = Path(log_directory)
     
     results = {}
     
     train_corrs, test_corrs, names = [], [], []
-    
-    for f in log_directory.glob("*.log"):
+    print(log_directory)
+    for f in log_directory.iterdir():
         hyperparameter = '-'.join(f.stem.split('_')[-4:])
+        #print(hyperparameter)
         out = correctly_parse_log_path(f)
 
-        result = Metrics(*out)
-        results[hyperparameter] = result
-        
-        train_corrs.append(result.train_corr)
-        test_corrs.append(result.test_corr)
-        names.append(hyperparameter)
-        
-    train_corrs = np.vstack(train_corrs)
-    test_corrs = np.vstack(test_corrs)
-    names = np.array(names)
+        if out is not None:
+            result = Metrics(*out)
+            results[hyperparameter] = result
+            
+            train_corrs.append(result.train_corr)
+            test_corrs.append(result.test_corr)
+            names.append(hyperparameter)
     
-    best_models = np.argmax(train_corrs, axis=0)
-    best_hyperparameters = names[best_models]
-    best_performances = test_corrs[best_models, np.arange(len(best_models))]
+    if len(train_corrs) > 0:
+        train_corrs = np.vstack(train_corrs)
+        test_corrs = np.vstack(test_corrs)
+        names = np.array(names)
+        
+        best_models = np.argmax(train_corrs, axis=0)
+        best_hyperparameters = names[best_models]
+        best_performances = test_corrs[best_models, np.arange(len(best_models))]
         
     # Select model with the lowest training loss in the final k
 #     best_hyperparameter, best_hyperparameter_performance = sorted(results.items(), key=lambda x: x[1].train_loss[-1])[0]
@@ -99,25 +104,28 @@ def select_hyperparameter(log_directory):
 
 #     return results
 
-    return best_hyperparameters, best_performances
+        return best_hyperparameters, best_performances
+    else:
+        return None
 
-logs_directory = Path("../output/210803_drug-baseline-models/run-logs")
+#logs_directory = Path("../output/210803_drug-baseline-models/run-logs")
+logs_directory = Path("/Users/amelanidelahoz/Documents/TCRP/tcrp-reproduce/tcrp/output/210803_drug-baseline-models/run-logs/Nutlin-3a")
+#logs_directory = Path()
 
 all_paths = []
-empty = []
-for drug_directory in logs_directory.glob("*"): 
-    for tissue_directory in drug_directory.glob("*"):
-        if not any(tissue_directory.iterdir()):
-            drug = str(tissue_directory).split("/")[-2]
-            if drug not in empty:
-                empty.append(drug)
-        else:
-            all_paths.append(tissue_directory)
-        
-with Pool(64) as p: 
-    results = p.map(select_hyperparameter, all_paths)
-
-print(results)
+# for drug_directory in logs_directory.glob("*"): 
+#     for tissue_directory in drug_directory.glob("*"):
+#         all_paths.append(tissue_directory)
+for tissue_directory in logs_directory.glob("*"):
+    all_paths.append(tissue_directory)
+         
+#results = map(select_hyperparameter, all_paths)
+results = []
+for path in all_paths:
+    result = select_hyperparameter(path)
+    if result is not None:
+        results.append(result)
+    
 
 all_test_corrs = np.vstack([r[1] for r in results])
 

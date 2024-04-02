@@ -71,7 +71,7 @@ with open(drug_tissue_list, 'rb') as f:
 # Load data
 #train_feature, train_label, tissue_index_list, drug_test_feature, drug_test_label, _ = load_data( drug_tissue_map, args.tissue, args.drug, path=data_dic )
 train_feature, train_label, tissue_index_list, drug_test_feature, drug_test_label, _ = load_data_cell_line( drug_tissue_map, args.drug, args.tissue, K, path=data_dic )
-feature_dim = train_feature.shape[1]
+feature_dim = train_feature.shape[1] 
 
 # This is the meta-learning model
 observed_tissue_model = mlp(feature_dim, args.layer, args.hidden)
