@@ -33,7 +33,12 @@ Moreover, as an alternative to running download_data.sh, we provide a Google Dri
 
 
 
+### 6. Compare models
 
+Before beginning these steps, make sure the output folder obtained from the model training is placed in the project’s home folder. Then, go to the model_comparisons folder and execute the files as follows:
+1. Open and execute the 1-gather-baselines Jupyter notebook interactively. Make sure the path to the baseline performances is set properly according to the project structure (third block in the notebook). This will produce a plot in the final code block.
+2. Execute the Python script called gather-results.py. Check the logs_directory path is properly set to the folder in the project (line 112). Alternatively, it is possible to run the 2-gather-results notebook interactively, but this could lead to errors if multiprocessing is not supported in the machine. The results from this step will be saved in the folder from where the Python script was executed.
+3. If necessary, move the files generated in the last step (tcrp_all_log_paths, tcrp_all_results, and tcrp_fewshot-test-correlations-corrected) into the model_comparisons folder. Then, run interactively the 3-analyze-all-tcrp-performance notebook to get the comparison plot.
 
 
 
