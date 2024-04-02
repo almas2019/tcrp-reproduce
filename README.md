@@ -5,7 +5,7 @@ This repository hosts the code used in our attempt to recreate the results from 
 ## Instructions for a complete run
 To reproduce our refactored results, follow the following instructions: 
 
-### 1. Fork and clone this repository 
+### 1. Clone this repository 
 
 ### 2. Create a Conda environment:
 
