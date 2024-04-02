@@ -7,5 +7,4 @@
 #SBATCH -N 1 
 
 cd /cluster/projects/schwartzgroup/almas/tcrp-reproduce/
-#tar cvf output.tar.lz4 -I lz4 output
-tar cvf - output | lz4 - output_again.tar.lz4
+tar cvf output.tar.lz4 -I lz4 output

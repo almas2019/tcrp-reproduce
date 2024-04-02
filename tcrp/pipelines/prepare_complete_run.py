@@ -28,7 +28,7 @@ print(home_dir)
 
 n_gpus = 20
 
-run_mode = "baseline" # "tcrp" or "baseline"
+run_mode = "tcrp" # "tcrp" or "baseline"
 run_name = "210803_drug-baseline-models"
 out_directory = home_dir + '/output/' + run_name
 task_directory = out_directory + '/' + "tasks"
