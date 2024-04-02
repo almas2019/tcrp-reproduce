@@ -115,12 +115,7 @@ logs_directory = Path("/Users/amelanidelahoz/Documents/TCRP/tcrp-reproduce/tcrp/
 all_paths = []
 # for drug_directory in logs_directory.glob("*"): 
 #     for tissue_directory in drug_directory.glob("*"):
-#         if not any(tissue_directory.iterdir()):
-#             drug = str(tissue_directory).split("/")[-2]
-#             if drug not in empty:
-#                 empty.append(drug)
-#         else:
-#             all_paths.append(tissue_directory)
+#         all_paths.append(tissue_directory)
 for tissue_directory in logs_directory.glob("*"):
     all_paths.append(tissue_directory)
          
